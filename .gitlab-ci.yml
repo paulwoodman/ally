@@ -14,11 +14,19 @@ deploy_ansible:
     - |
       python3 <<EOF
       import yaml, json
-      with open('vars.yml') as f:
-          vars_yaml = yaml.safe_load(f)
-      with open('extra_vars.json', 'w') as f:
-          json.dump(vars_yaml, f)
+      try:
+          with open('vars.yml') as f:
+              vars_yaml = yaml.safe_load(f)
+          with open('extra_vars.json', 'w') as f:
+              json.dump(vars_yaml, f, indent=4)
+          print(f"Successfully converted vars.yml to extra_vars.json")
+      except Exception as e:
+          print(f"Error during conversion: {e}")
+          exit(1)
       EOF
+
+    # Debug: Display the content of extra_vars.json to ensure it was created correctly
+    - cat extra_vars.json
 
     # Trigger AAP job template
     - |
@@ -31,8 +39,10 @@ deploy_ansible:
       # Print the response to help diagnose issues
       echo "Response from AAP: $response"
 
+      # Extract the job ID from the response
       job_id=$(echo "$response" | python3 -c "import sys, json; print(json.load(sys.stdin).get('job', ''))")
 
+      # If no job ID is found, fail the job
       if [[ -z "$job_id" ]]; then
         echo "❌ Failed to get job ID from AAP response. Response was: $response"
         exit 1
@@ -40,21 +50,26 @@ deploy_ansible:
 
       echo "✅ AAP Job ID: $job_id"
 
-    # Poll AAP job status
+    # Poll AAP job status (simplified version)
     - |
       while true; do
         status=$(curl -sk "https://aap.rydzinski.local/api/controller/v2/jobs/$job_id/" \
-          -H "Authorization: Bearer $AAP_TOKEN" | python3 -c "import sys, json; print(json.load(sys.stdin)['status'])")
+          -H "Authorization: Bearer $AAP_TOKEN")
+        
+        # Display current job status
+        echo "Job Status: $status"
 
-        echo "Current AAP job status: $status"
-
-        if [[ "$status" == "successful" ]]; then
-          echo "Job completed successfully!"
+        # Check if the job has finished
+        job_status=$(echo "$status" | python3 -c "import sys, json; print(json.load(sys.stdin).get('status', ''))")
+        
+        if [[ "$job_status" == "successful" ]]; then
+          echo "✅ AAP Job completed successfully!"
           break
-        elif [[ "$status" == "failed" ]]; then
-          echo "Job failed!"
+        elif [[ "$job_status" == "failed" ]]; then
+          echo "❌ AAP Job failed!"
           exit 1
         fi
 
-        sleep 5
+        # Wait before polling again
+        sleep 30
       done
