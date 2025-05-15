@@ -1,0 +1,12 @@
+---
+- name: Display Extra Vars from GitLab
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Show all received extra vars
+      debug:
+        var: hostvars[inventory_hostname]
+
+    - name: Display specific var (example)
+      debug:
+        msg: "my_var1 = {{ my_var1 }}, my_var2 = {{ my_var2 }}"
