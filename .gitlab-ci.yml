@@ -31,6 +31,16 @@ deploy_ansible:
     # Trigger AAP job template
     - |
       echo "Triggering AAP job template..."
+      
+      # Check if extra_vars.json is being correctly read and passed
+      if [ -f "extra_vars.json" ]; then
+        echo "Found extra_vars.json, contents:"
+        cat extra_vars.json
+      else
+        echo "❌ extra_vars.json not found!"
+        exit 1
+      fi
+
       response=$(curl -sk -X POST "https://aap.rydzinski.local/api/controller/v2/job_templates/9/launch/" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $AAP_TOKEN" \
