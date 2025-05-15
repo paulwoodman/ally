@@ -4,6 +4,8 @@ stages:
 deploy_ansible:
   stage: deploy
   image: python:3.10
+  tags:
+    - docker
   script:
     # Install required tools
     - pip install pyyaml requests
