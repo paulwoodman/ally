@@ -7,6 +7,6 @@
       debug:
         var: hostvars[inventory_hostname]
 
-    - name: Display specific var (example)
+    - name: Display specific var for this (example)
       debug:
         msg: "my_var1 = {{ my_var1 }}, my_var2 = {{ my_var2 }}"
