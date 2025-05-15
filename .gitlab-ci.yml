@@ -41,10 +41,10 @@ deploy_ansible:
         exit 1
       fi
 
-      response=$(curl -sk -X POST "https://aap.rydzinski.local/api/controller/v2/job_templates/9/launch/" \
+      response=$(curl -s -k -X POST "https://aap.rydzinski.local/api/controller/v2/job_templates/9/launch/" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $AAP_TOKEN" \
-        -d @extra_vars.json)
+        -d '{"extra_vars": '"$(cat extra_vars.json)"'}')
 
       # Print the response to help diagnose issues
       echo "Response from AAP: $response"
