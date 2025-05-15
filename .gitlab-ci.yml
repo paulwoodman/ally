@@ -24,13 +24,33 @@ deploy_ansible:
     - |
       echo "Triggering AAP job template..."
       response=$(curl -sk -X POST "$AAP_HOST/api/v2/job_templates/$TEMPLATE_ID/launch/" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $AAP_TOKEN" \
-        -d @extra_vars.json)
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $AAP_TOKEN" \
+      -d @extra_vars.json)
 
-      job_id=$(echo "$response" | python3 -c "import sys, json; print(json.load(sys.stdin)['job'])")
+    # Print the response to help diagnose issues
+    echo "Response from AAP: $response"
+  
+    job_id=$(echo "$response" | python3 -c "import sys, json; print(json.load(sys.stdin).get('job', ''))")
+  
+    if [[ -z "$job_id" ]]; then
+      echo "❌ Failed to get job ID from AAP response. Response was: $response"
+      exit 1
+    fi
 
-      echo "AAP Job ID: $job_id"
+    echo "✅ AAP Job ID: $job_id"
+
+#    # Trigger AAP job template
+#    - |
+#      echo "Triggering AAP job template..."
+#      response=$(curl -sk -X POST "$AAP_HOST/api/v2/job_templates/$TEMPLATE_ID/launch/" \
+#        -H "Content-Type: application/json" \
+#        -H "Authorization: Bearer $AAP_TOKEN" \
+#        -d @extra_vars.json)
+#
+#      job_id=$(echo "$response" | python3 -c "import sys, json; print(json.load(sys.stdin)['job'])")
+#
+#      echo "AAP Job ID: $job_id"
 
     # Optional: Poll AAP for job status
     - |
