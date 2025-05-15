@@ -1,5 +1,5 @@
 ---
-- name: Display Extra Vars from GitLab
+- name: Display Extra Vars from GitLab test
   hosts: localhost
   gather_facts: no
   tasks:
