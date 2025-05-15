@@ -10,13 +10,6 @@ deploy_ansible:
     # Install required tools
     - pip install pyyaml requests
 
-    # Check if vars.yml exists
-    - |
-      if [ ! -f vars.yml ]; then
-        echo "❌ vars.yml not found"
-        exit 1
-      fi
-
     # Convert vars.yml to extra_vars.json
     - |
       python3 <<EOF
@@ -30,18 +23,10 @@ deploy_ansible:
     # Trigger AAP job template
     - |
       echo "Triggering AAP job template..."
-      response=$(curl -sk -v -X POST "$AAP_HOST/api/v2/job_templates/$TEMPLATE_ID/launch/" \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $AAP_TOKEN" \
-      -d @extra_vars.json)
-
-      # Check the HTTP response code
-      http_code=$(echo "$response" | head -n 1 | awk '{print $2}')
-      if [ "$http_code" -ne 200 ]; then
-        echo "❌ AAP job trigger failed. HTTP code: $http_code"
-        echo "Response: $response"
-        exit 1
-      fi
+      response=$(curl -sk -X POST "https://aap.rydzinski.local/api/controller/v2/job_templates/9/launch/" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $AAP_TOKEN" \
+        -d @extra_vars.json)
 
       # Print the response to help diagnose issues
       echo "Response from AAP: $response"
@@ -55,10 +40,10 @@ deploy_ansible:
 
       echo "✅ AAP Job ID: $job_id"
 
-    # Optional: Poll AAP for job status
+    # Poll AAP job status
     - |
       while true; do
-        status=$(curl -sk "$AAP_HOST/api/v2/jobs/$job_id/" \
+        status=$(curl -sk "https://aap.rydzinski.local/api/controller/v2/jobs/$job_id/" \
           -H "Authorization: Bearer $AAP_TOKEN" | python3 -c "import sys, json; print(json.load(sys.stdin)['status'])")
 
         echo "Current AAP job status: $status"
@@ -71,5 +56,5 @@ deploy_ansible:
           exit 1
         fi
 
-        sleep 10
+        sleep 5
       done
