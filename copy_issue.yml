@@ -5,8 +5,8 @@
   vars:
     #ANSIBLE_REMOTE_TEMP: /exports/home/
     #ANSIBLE_KEEP_REMOTE_FILES: 1
-    deployment_remote_tmp: "{{ looup('env',HOME}}/.ansible/tmp}}"
-    deployment_location: "{{ looup('env',HOME}}/.ansible/tmp}}"
+    deployment_remote_tmp: "{{ lookup('env',HOME}}/.ansible/tmp"
+    deployment_location: "{{ lookup('env',HOME}}/synthrticdata"
   tasks:
     - name: Check hostname
       ansible.builtin.command: hostname
@@ -22,6 +22,6 @@
     - name: Show all received extra vars
       ansible.builtin.copy:
         src: /tmp/testfile.txt 
-        dest: deployment_location 
+        dest: "{{ deployment_location }}" 
         remote_src: yes
          
