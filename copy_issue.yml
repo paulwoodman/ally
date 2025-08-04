@@ -17,6 +17,6 @@
     - name: Show all received extra vars
       ansible.builtin.copy:
         src: /tmp/testfile.txt 
-        dest: /exports/home/
+        dest: /export/home/
         remote_src: yes
          
