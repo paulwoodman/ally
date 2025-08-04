@@ -1,22 +1,21 @@
 ---
 hosts: all
 gather_facts: no
-  tasks:
-    - name: Show all received extra vars
-    - name: Check hostname
-      ansible.builtin.command: hostname
+tasks:
+  - name: Check hostname
+    ansible.builtin.command: hostname
 
-    - name: Stat the file
+  - name: Stat the file
     ansible.builtin.stat:
       path: /tmp/testfile.txt
       register: file_check
 
-    - debug:
-       var: file_check.stat
+  - debug:
+      var: file_check.stat
 
-    - name: Show all received extra vars
-      ansible.builtin.copy:
-        src: /tmp/testfile.txt 
-        dest: /exports/home/
-        remote_src: yes
+  - name: Show all received extra vars
+    ansible.builtin.copy:
+      src: /tmp/testfile.txt 
+      dest: /exports/home/
+      remote_src: yes
          
