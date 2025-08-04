@@ -7,4 +7,5 @@
       ansible.builtin.copy:
         src: /tmp/testfile.txt 
         dest: /exports/home/
+        remote_src: yes
          
