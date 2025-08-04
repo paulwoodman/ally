@@ -1,0 +1,10 @@
+---
+- name: Try and replicate the permissions issue
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Show all received extra vars
+      ansible.builtin.copy:
+        src: testfile.txt 
+        dest: /exports/home/
+         
