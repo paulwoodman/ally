@@ -2,6 +2,9 @@
 - name: test play
   hosts: all
   gather_facts: no
+  vars:
+    ANSIBLE_REMOTE_TEMP: /exports/home/
+    ANSIBLE_KEEP_REMOTE_FILES: 1
   tasks:
     - name: Check hostname
       ansible.builtin.command: hostname
