@@ -5,6 +5,6 @@
   tasks:
     - name: Show all received extra vars
       ansible.builtin.copy:
-        src: testfile.txt 
+        src: /tmp/testfile.txt 
         dest: /exports/home/
          
