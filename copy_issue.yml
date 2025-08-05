@@ -20,7 +20,7 @@
 
     - name: Print the file
       ansible.builtin.debug:
-        msg: "{{ item.path }}
+        msg: "{{ item.path }}"
       loop: "{{ files_to_delete }}"
 
     - name: Stat the file
