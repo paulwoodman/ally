@@ -12,7 +12,7 @@
       ansible.builtin.command: hostname
 
     - name: Find files called woody
-      ansible.built.find:
+      ansible.builtin.find:
         path: "{{ deployment_location }}"
         patterns: "ansible-tmp*" 
         file_type: type
