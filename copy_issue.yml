@@ -15,7 +15,7 @@
       ansible.builtin.find:
         path: "{{ deployment_location }}"
         patterns: "ansible-tmp*" 
-        file_type: type
+        file_type: any
       register: files_to_delete
 
     - name: Print the file
