@@ -13,7 +13,7 @@
 
     - name: Find files called woody
       ansible.built.find:
-        path: '{{ deployment_location }}"
+        path: "{{ deployment_location }}"
         patterns: "ansible-tmp*" 
         file_type: type
       register: files_to_delete
