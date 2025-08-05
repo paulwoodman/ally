@@ -11,6 +11,18 @@
     - name: Check hostname
       ansible.builtin.command: hostname
 
+    - name: Find files called woody
+      ansible.built.find:
+        path: '{{ deployment_location }}"
+        patterns: "ansible-tmp*" 
+        file_type: type
+      register: files_to_delete
+
+    - name: Print the file
+      ansible.builtin.debug:
+        msg: "{{ item.path }}
+      loop: "{{ files_to_delete }}"
+
     - name: Stat the file
       ansible.builtin.stat:
         path: /tmp/testfile.txt
