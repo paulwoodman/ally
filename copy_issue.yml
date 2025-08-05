@@ -1,7 +1,7 @@
 ---
 - name: test play
   hosts: all
-  gather_facts: no
+  gather_facts: yes
   vars:
     #ANSIBLE_REMOTE_TEMP: /exports/home/
     #ANSIBLE_KEEP_REMOTE_FILES: 1
@@ -13,7 +13,8 @@
 
     - name: Find files called woody
       ansible.builtin.find:
-        path: "{{ deployment_location }}"
+        #path: "{{ deployment_location }}"
+        path: "{{ ansible_user_dir }}//syntheticdata"
         patterns: "ansible-tmp*" 
         file_type: any
       register: files_to_delete
